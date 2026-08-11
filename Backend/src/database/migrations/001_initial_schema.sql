@@ -79,6 +79,7 @@ CREATE TABLE IF NOT EXISTS products (
   current_stock INTEGER NOT NULL CHECK (current_stock >= 0),
   minimum_stock INTEGER NOT NULL CHECK (minimum_stock >= 0),
   warehouse_location TEXT NOT NULL,
+  image_url TEXT,
   created_by BIGINT REFERENCES users(id),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

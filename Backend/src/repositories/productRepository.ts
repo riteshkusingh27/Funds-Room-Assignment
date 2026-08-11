@@ -12,6 +12,7 @@ type ProductRow = {
   current_stock: string;
   minimum_stock: string;
   warehouse_location: string;
+  image_url: string | null;
   created_by: string | null;
   created_at: string;
   updated_at: string;
@@ -27,6 +28,7 @@ function mapProductRow(row: ProductRow): Product {
     currentStock: Number(row.current_stock),
     minimumStock: Number(row.minimum_stock),
     warehouseLocation: row.warehouse_location,
+    imageUrl: row.image_url ?? null,
     createdBy: row.created_by ? Number(row.created_by) : null,
     createdAt: row.created_at,
     updatedAt: row.updated_at
@@ -52,7 +54,7 @@ function toProductListResponse(items: Product[], total: number, page: number, li
   };
 }
 
-const SELECT_COLUMNS = "id, name, sku, category, unit_price, current_stock, minimum_stock, warehouse_location, created_by, created_at, updated_at";
+const SELECT_COLUMNS = "id, name, sku, category, unit_price, current_stock, minimum_stock, warehouse_location, image_url, created_by, created_at, updated_at";
 
 export async function listProducts(query: ProductListQuery): Promise<ProductListResponse> {
   const searchValue = query.search ? `%${query.search}%` : null;
@@ -121,8 +123,8 @@ export async function getProductByIdWithClient(client: PoolClient, id: number): 
 export async function createProduct(input: ProductCreateInput, createdBy: number | null): Promise<Product> {
   const result = await pool.query<ProductRow>(
     `
-      INSERT INTO products (name, sku, category, unit_price, current_stock, minimum_stock, warehouse_location, created_by)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO products (name, sku, category, unit_price, current_stock, minimum_stock, warehouse_location, image_url, created_by)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING ${SELECT_COLUMNS}
     `,
     [
@@ -133,6 +135,7 @@ export async function createProduct(input: ProductCreateInput, createdBy: number
       input.currentStock,
       input.minimumStock,
       input.warehouseLocation,
+      input.imageUrl ?? null,
       createdBy
     ]
   );
@@ -167,6 +170,7 @@ export async function updateProduct(id: number, input: ProductUpdateInput): Prom
   addField("current_stock", input.currentStock);
   addField("minimum_stock", input.minimumStock);
   addField("warehouse_location", input.warehouseLocation);
+  addField("image_url", input.imageUrl);
 
   if (fields.length === 0) {
     return getProductById(id);

@@ -41,7 +41,8 @@ export const productCreateSchema = z.object({
   unitPrice: z.coerce.number().nonnegative("Unit price must be >= 0"),
   currentStock: z.coerce.number().int().nonnegative("Current stock must be >= 0"),
   minimumStock: z.coerce.number().int().nonnegative("Minimum stock must be >= 0"),
-  warehouseLocation: z.string().trim().min(1, "Warehouse location is required").max(500)
+  warehouseLocation: z.string().trim().min(1, "Warehouse location is required").max(500),
+  imageUrl: z.string().trim().optional().nullable()
 });
 
 export const productUpdateSchema = productCreateSchema.partial().refine((value) => Object.values(value).some((item) => item !== undefined), {

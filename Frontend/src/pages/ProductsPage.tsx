@@ -12,6 +12,8 @@ import {
   History,
   Layers,
   MapPin,
+  Upload,
+  Package,
 } from 'lucide-react';
 
 type Product = {
@@ -23,6 +25,7 @@ type Product = {
   currentStock: number;
   minimumStock: number;
   warehouseLocation: string;
+  imageUrl?: string | null;
   createdAt: string;
 };
 
@@ -63,6 +66,8 @@ export const ProductsPage: React.FC = () => {
   const [currentStock, setCurrentStock] = useState('');
   const [minimumStock, setMinimumStock] = useState('');
   const [warehouseLocation, setWarehouseLocation] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   // Form State - Adjust Stock
   const [stockProduct, setStockProduct] = useState<Product | null>(null);
@@ -94,6 +99,32 @@ export const ProductsPage: React.FC = () => {
     fetchProducts();
   }, [fetchProducts]);
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try {
+        const base64Data = reader.result as string;
+        const res = await api.post<{ imageUrl: string }>('/products/upload-image', {
+          fileName: file.name,
+          fileType: file.type,
+          base64Data,
+        });
+        setImageUrl(res.imageUrl);
+        setToast({ type: 'success', message: 'Product image successfully uploaded to Cloudflare R2!' });
+      } catch (err) {
+        console.error('Failed to upload image:', err);
+        setToast({ type: 'error', message: 'Failed to upload image to Cloudflare R2' });
+      } finally {
+        setUploadingImage(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -105,6 +136,7 @@ export const ProductsPage: React.FC = () => {
         currentStock: parseInt(currentStock, 10),
         minimumStock: parseInt(minimumStock, 10),
         warehouseLocation,
+        imageUrl: imageUrl || null,
       });
 
       setToast({ type: 'success', message: 'Product added to inventory catalog!' });
@@ -128,6 +160,7 @@ export const ProductsPage: React.FC = () => {
     setCurrentStock('');
     setMinimumStock('');
     setWarehouseLocation('');
+    setImageUrl('');
   };
 
   const handleAdjustStock = async (e: React.FormEvent) => {
@@ -257,9 +290,45 @@ export const ProductsPage: React.FC = () => {
                   return (
                     <tr key={p.id}>
                       <td>
-                        <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{p.name}</div>
-                        <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--primary)', marginTop: '2px' }}>
-                          {p.sku}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          {p.imageUrl ? (
+                            <img
+                              src={p.imageUrl}
+                              alt={p.name}
+                              style={{
+                                width: '44px',
+                                height: '44px',
+                                borderRadius: '8px',
+                                objectFit: 'cover',
+                                border: '1px solid var(--border-color)',
+                                backgroundColor: '#f1f5f9',
+                                flexShrink: 0,
+                              }}
+                            />
+                          ) : (
+                            <div
+                              style={{
+                                width: '44px',
+                                height: '44px',
+                                borderRadius: '8px',
+                                backgroundColor: 'var(--primary-light)',
+                                color: 'var(--primary)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                border: '1px solid var(--border-color)',
+                                flexShrink: 0,
+                              }}
+                            >
+                              <Package size={20} />
+                            </div>
+                          )}
+                          <div>
+                            <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{p.name}</div>
+                            <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--primary)', marginTop: '2px' }}>
+                              {p.sku}
+                            </div>
+                          </div>
                         </div>
                       </td>
                       <td>
@@ -340,6 +409,53 @@ export const ProductsPage: React.FC = () => {
       {/* Modal: Add Product */}
       <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title="Create New Product">
         <form onSubmit={handleCreateProduct}>
+          <div className="input-group">
+            <label className="input-label">Product Image (Cloudflare R2 Storage)</label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#f8fafc', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt="Preview"
+                  style={{
+                    width: '52px',
+                    height: '52px',
+                    borderRadius: '8px',
+                    objectFit: 'cover',
+                    border: '1px solid var(--border-color)',
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: '52px',
+                    height: '52px',
+                    borderRadius: '8px',
+                    background: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '1px dashed #cbd5e1',
+                    color: '#94a3b8',
+                  }}
+                >
+                  <Upload size={22} />
+                </div>
+              )}
+              <div style={{ flex: 1 }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={uploadingImage}
+                  style={{ fontSize: '0.8125rem' }}
+                />
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '4px' }}>
+                  {uploadingImage ? 'Uploading image to Cloudflare R2 bucket...' : imageUrl ? '✓ Image uploaded to Cloudflare R2' : 'Upload photo via Backend to Cloudflare R2'}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="input-group">
             <label className="input-label">Product Name *</label>
             <input type="text" className="form-input" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Premium Cement 50kg" />

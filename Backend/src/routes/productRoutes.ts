@@ -5,7 +5,8 @@ import {
   getProduct,
   listProductMovements,
   listProducts,
-  updateProduct
+  updateProduct,
+  uploadProductImage
 } from "../controllers/productController";
 import { authenticate } from "../middleware/authenticate";
 import { authorize } from "../middleware/authorize";
@@ -17,6 +18,7 @@ productRouter.use(authenticate);
 
 productRouter.get("/", authorize(["ADMIN", "SALES", "WAREHOUSE"]), asyncHandler(listProducts));
 productRouter.post("/", authorize(["ADMIN", "WAREHOUSE"]), asyncHandler(createProduct));
+productRouter.post("/upload-image", authorize(["ADMIN", "WAREHOUSE"]), asyncHandler(uploadProductImage));
 productRouter.get("/:productId", authorize(["ADMIN", "SALES", "WAREHOUSE"]), asyncHandler(getProduct));
 productRouter.put("/:productId", authorize(["ADMIN", "WAREHOUSE"]), asyncHandler(updateProduct));
 productRouter.get("/:productId/movements", authorize(["ADMIN", "WAREHOUSE"]), asyncHandler(listProductMovements));

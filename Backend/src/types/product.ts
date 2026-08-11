@@ -7,6 +7,7 @@ export type Product = {
   currentStock: number;
   minimumStock: number;
   warehouseLocation: string;
+  imageUrl: string | null;
   createdBy: number | null;
   createdAt: string;
   updatedAt: string;

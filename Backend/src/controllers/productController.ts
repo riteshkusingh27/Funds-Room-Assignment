@@ -19,6 +19,7 @@ import {
   listProductService,
   updateProductService
 } from "../services/productService";
+import { uploadProductImageToR2 } from "../services/r2Service";
 
 function throwValidationError(message: string, errors: Record<string, string>): never {
   throw new ApiError(400, message, errors);
@@ -122,3 +123,22 @@ export async function listProductMovements(req: Request, res: Response): Promise
     data: result
   });
 }
+
+export async function uploadProductImage(req: Request, res: Response): Promise<void> {
+  const { fileName, fileType, base64Data } = req.body ?? {};
+
+  if (!fileName || !base64Data) {
+    throw new ApiError(400, "fileName and base64Data are required for image upload");
+  }
+
+  const base64Clean = base64Data.replace(/^data:image\/\w+;base64,/, "");
+  const fileBuffer = Buffer.from(base64Clean, "base64");
+
+  const imageUrl = await uploadProductImageToR2(fileBuffer, fileName, fileType || "image/jpeg");
+
+  res.status(200).json({
+    success: true,
+    data: { imageUrl }
+  });
+}
+
