@@ -50,6 +50,7 @@ type Product = {
 export const ChallansPage: React.FC = () => {
   const { hasRole } = useAuth();
   const canCreate = hasRole(['ADMIN', 'SALES']);
+  const canConfirm = hasRole(['ADMIN', 'SALES', 'WAREHOUSE']);
   const canCancel = hasRole(['ADMIN']);
 
   const [challans, setChallans] = useState<Challan[]>([]);
@@ -306,7 +307,7 @@ export const ChallansPage: React.FC = () => {
                           <span>PDF Invoice</span>
                         </button>
 
-                        {c.status === 'DRAFT' && canCreate && (
+                        {c.status === 'DRAFT' && canConfirm && (
                           <button
                             onClick={() => handleConfirmSale(c.id)}
                             disabled={confirmingId === c.id}
@@ -491,7 +492,7 @@ export const ChallansPage: React.FC = () => {
                   <span>PDF Invoice</span>
                 </button>
 
-                {selectedChallan.status === 'DRAFT' && canCreate && (
+                {selectedChallan.status === 'DRAFT' && canConfirm && (
                   <button
                     onClick={() => handleConfirmSale(selectedChallan.id)}
                     disabled={confirmingId === selectedChallan.id}

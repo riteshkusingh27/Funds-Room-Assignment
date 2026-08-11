@@ -23,7 +23,7 @@ type DashboardData = {
 };
 
 export const DashboardPage: React.FC = () => {
-  const { user } = useAuth();
+  const { user, hasRole } = useAuth();
   const navigate = useNavigate();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -114,65 +114,73 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
-              <div
-                onClick={() => navigate('/customers')}
-                style={{
-                  padding: '16px',
-                  borderRadius: 'var(--radius-md)',
-                  background: '#f8fafc',
-                  border: '1px solid #e2e8f0',
-                  cursor: 'pointer',
-                }}
-              >
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#4f46e5', textTransform: 'uppercase', marginBottom: '4px' }}>CRM Operations</div>
-                <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: '#0f172a' }}>Customer Accounts</div>
-                <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>Manage client profiles & sales follow-ups</div>
-              </div>
+              {hasRole(['ADMIN', 'SALES', 'ACCOUNTS']) && (
+                <div
+                  onClick={() => navigate('/customers')}
+                  style={{
+                    padding: '16px',
+                    borderRadius: 'var(--radius-md)',
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#4f46e5', textTransform: 'uppercase', marginBottom: '4px' }}>CRM Operations</div>
+                  <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: '#0f172a' }}>Customer Accounts</div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>Manage client profiles & sales follow-ups</div>
+                </div>
+              )}
 
-              <div
-                onClick={() => navigate('/products')}
-                style={{
-                  padding: '16px',
-                  borderRadius: 'var(--radius-md)',
-                  background: '#f8fafc',
-                  border: '1px solid #e2e8f0',
-                  cursor: 'pointer',
-                }}
-              >
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#2563eb', textTransform: 'uppercase', marginBottom: '4px' }}>Inventory Control</div>
-                <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: '#0f172a' }}>Products & Stock</div>
-                <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>Track stock levels & movement logs</div>
-              </div>
+              {hasRole(['ADMIN', 'SALES', 'WAREHOUSE']) && (
+                <div
+                  onClick={() => navigate('/products')}
+                  style={{
+                    padding: '16px',
+                    borderRadius: 'var(--radius-md)',
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#2563eb', textTransform: 'uppercase', marginBottom: '4px' }}>Inventory Control</div>
+                  <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: '#0f172a' }}>Products & Stock</div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>Track stock levels & movement logs</div>
+                </div>
+              )}
 
-              <div
-                onClick={() => navigate('/challans')}
-                style={{
-                  padding: '16px',
-                  borderRadius: 'var(--radius-md)',
-                  background: '#f8fafc',
-                  border: '1px solid #e2e8f0',
-                  cursor: 'pointer',
-                }}
-              >
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#0284c7', textTransform: 'uppercase', marginBottom: '4px' }}>Order Processing</div>
-                <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: '#0f172a' }}>Draft Challans</div>
-                <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>Issue sales delivery challans & items</div>
-              </div>
+              {hasRole(['ADMIN', 'SALES', 'WAREHOUSE', 'ACCOUNTS']) && (
+                <div
+                  onClick={() => navigate('/challans')}
+                  style={{
+                    padding: '16px',
+                    borderRadius: 'var(--radius-md)',
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#0284c7', textTransform: 'uppercase', marginBottom: '4px' }}>Order Processing</div>
+                  <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: '#0f172a' }}>Delivery Challans</div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>Issue & review delivery orders</div>
+                </div>
+              )}
 
-              <div
-                onClick={() => navigate('/challans')}
-                style={{
-                  padding: '16px',
-                  borderRadius: 'var(--radius-md)',
-                  background: '#f8fafc',
-                  border: '1px solid #e2e8f0',
-                  cursor: 'pointer',
-                }}
-              >
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#059669', textTransform: 'uppercase', marginBottom: '4px' }}>Fulfillment</div>
-                <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: '#0f172a' }}>Sale Confirmation</div>
-                <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>Execute stock deduction & issue invoice</div>
-              </div>
+              {hasRole(['ADMIN', 'SALES', 'WAREHOUSE']) && (
+                <div
+                  onClick={() => navigate('/challans')}
+                  style={{
+                    padding: '16px',
+                    borderRadius: 'var(--radius-md)',
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#059669', textTransform: 'uppercase', marginBottom: '4px' }}>Fulfillment</div>
+                  <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: '#0f172a' }}>Stock Dispatch</div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>Execute stock deduction & confirm order</div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -180,18 +188,36 @@ export const DashboardPage: React.FC = () => {
           <div className="card">
             <h2 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '14px', color: 'var(--text-main)' }}>Quick Actions</h2>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              <button onClick={() => navigate('/customers')} className="btn btn-primary">
-                <PlusCircle size={16} />
-                <span>New Customer</span>
-              </button>
-              <button onClick={() => navigate('/products')} className="btn btn-secondary">
-                <PackageCheck size={16} />
-                <span>Manage Inventory</span>
-              </button>
-              <button onClick={() => navigate('/challans')} className="btn btn-success">
-                <FileText size={16} />
-                <span>Create Delivery Challan</span>
-              </button>
+              {hasRole(['ADMIN', 'SALES']) && (
+                <button onClick={() => navigate('/customers')} className="btn btn-primary">
+                  <PlusCircle size={16} />
+                  <span>New Customer</span>
+                </button>
+              )}
+              {hasRole(['ADMIN', 'WAREHOUSE']) && (
+                <button onClick={() => navigate('/products')} className="btn btn-primary">
+                  <PlusCircle size={16} />
+                  <span>Add Product</span>
+                </button>
+              )}
+              {hasRole(['ADMIN', 'SALES', 'WAREHOUSE']) && (
+                <button onClick={() => navigate('/products')} className="btn btn-secondary">
+                  <PackageCheck size={16} />
+                  <span>Manage Inventory</span>
+                </button>
+              )}
+              {hasRole(['ADMIN', 'SALES']) && (
+                <button onClick={() => navigate('/challans')} className="btn btn-success">
+                  <FileText size={16} />
+                  <span>Create Delivery Challan</span>
+                </button>
+              )}
+              {hasRole(['ADMIN', 'SALES', 'WAREHOUSE', 'ACCOUNTS']) && (
+                <button onClick={() => navigate('/challans')} className="btn btn-secondary">
+                  <FileText size={16} />
+                  <span>Delivery Orders & Invoices</span>
+                </button>
+              )}
             </div>
           </div>
         </>

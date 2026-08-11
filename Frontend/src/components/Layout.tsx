@@ -46,7 +46,7 @@ export const Sidebar: React.FC = () => {
       label: 'Sales Challans',
       path: '/challans',
       icon: <FileText size={18} />,
-      roles: ['ADMIN', 'SALES', 'ACCOUNTS'],
+      roles: ['ADMIN', 'SALES', 'WAREHOUSE', 'ACCOUNTS'],
     },
   ];
 
