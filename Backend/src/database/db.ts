@@ -1,9 +1,13 @@
 import { Pool } from "pg";
 import { env } from "../config/env";
 
+const cleanConnectionString = env.databaseUrl
+  ? env.databaseUrl.replace(/\?sslmode=[^&]+/, "").replace(/&sslmode=[^&]+/, "")
+  : env.databaseUrl;
+
 export const pool = new Pool({
-  connectionString: env.databaseUrl,
-  ssl: env.databaseUrl ? { rejectUnauthorized: false } : undefined
+  connectionString: cleanConnectionString,
+  ssl: cleanConnectionString ? { rejectUnauthorized: false } : undefined
 });
 
 export async function withTransaction<T>(work: (client: import("pg").PoolClient) => Promise<T>): Promise<T> {
