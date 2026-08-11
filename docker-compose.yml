@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: fundsroom_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - DATABASE_URL=postgresql://neondb_owner:npg_gY5pGvO4FdrV@ep-raspy-violet-a8z1lksr-pooler.eastus2.azure.neon.tech/neondb?sslmode=require
+      - JWT_SECRET=fundsroom_production_jwt_secret_key_2026_super_secure
+      - JWT_EXPIRES_IN=24h
+      - R2_ACCOUNT_ID=1c814e1821a0777ffe4eb60b359a79b5
+      - R2_ACCESS_KEY_ID=383a0d21d2933224e693d795c013eba0
+      - R2_SECRET_ACCESS_KEY=312bbfeb90997cb24cfcfe134b3251fbad4ad4c8c66e0fbd9cc244ff6f317de2
+      - R2_BUCKET_NAME=product-images
+    restart: always
