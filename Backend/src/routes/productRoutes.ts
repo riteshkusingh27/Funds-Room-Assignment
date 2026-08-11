@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createProduct,
   createStockMovement,
+  deleteProduct,
   getProduct,
   listProductMovements,
   listProducts,
@@ -25,6 +26,7 @@ productRouter.post("/", authorize(["ADMIN", "WAREHOUSE"]), asyncHandler(createPr
 productRouter.post("/upload-image", authorize(["ADMIN", "WAREHOUSE"]), asyncHandler(uploadProductImage));
 productRouter.get("/:productId", authorize(["ADMIN", "SALES", "WAREHOUSE"]), asyncHandler(getProduct));
 productRouter.put("/:productId", authorize(["ADMIN", "WAREHOUSE"]), asyncHandler(updateProduct));
+productRouter.delete("/:productId", authorize(["ADMIN", "WAREHOUSE"]), asyncHandler(deleteProduct));
 productRouter.get("/:productId/movements", authorize(["ADMIN", "WAREHOUSE"]), asyncHandler(listProductMovements));
 productRouter.post("/stock-movements", authorize(["ADMIN", "WAREHOUSE"]), asyncHandler(createStockMovement));
 

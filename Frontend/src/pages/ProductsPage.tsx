@@ -14,6 +14,7 @@ import {
   MapPin,
   Upload,
   Package,
+  PowerOff,
 } from 'lucide-react';
 
 type Product = {
@@ -83,6 +84,8 @@ export const ProductsPage: React.FC = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [submittingProduct, setSubmittingProduct] = useState(false);
+  const [deactivatingId, setDeactivatingId] = useState<number | null>(null);
 
   // Form State - Adjust Stock
   const [stockProduct, setStockProduct] = useState<Product | null>(null);
@@ -145,6 +148,7 @@ export const ProductsPage: React.FC = () => {
 
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmittingProduct(true);
     try {
       await api.post('/products', {
         name,
@@ -167,6 +171,27 @@ export const ProductsPage: React.FC = () => {
       } else {
         setToast({ type: 'error', message: 'Failed to create product' });
       }
+    } finally {
+      setSubmittingProduct(false);
+    }
+  };
+
+  const handleDeactivateProduct = async (product: Product) => {
+    if (!window.confirm(`Are you sure you want to deactivate/delete product "${product.name}" (${product.sku})?`)) return;
+
+    setDeactivatingId(product.id);
+    try {
+      await api.delete(`/products/${product.id}`);
+      setToast({ type: 'success', message: `Product "${product.name}" deactivated successfully` });
+      fetchProducts();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setToast({ type: 'error', message: err.message });
+      } else {
+        setToast({ type: 'error', message: 'Failed to deactivate product' });
+      }
+    } finally {
+      setDeactivatingId(null);
     }
   };
 
@@ -382,15 +407,28 @@ export const ProductsPage: React.FC = () => {
                       <td>
                         <div style={{ display: 'flex', gap: '8px' }}>
                           {canModify && (
-                            <button
-                              onClick={() => {
-                                setStockProduct(p);
-                                setIsStockModalOpen(true);
-                              }}
-                              className="btn btn-secondary btn-sm"
-                            >
-                              Adjust Stock
-                            </button>
+                            <>
+                              <button
+                                onClick={() => {
+                                  setStockProduct(p);
+                                  setIsStockModalOpen(true);
+                                }}
+                                className="btn btn-secondary btn-sm"
+                              >
+                                Adjust Stock
+                              </button>
+
+                              <button
+                                onClick={() => handleDeactivateProduct(p)}
+                                disabled={deactivatingId === p.id}
+                                className="btn btn-danger btn-sm"
+                                title="Deactivate / Remove Product"
+                                style={{ padding: '6px 10px' }}
+                              >
+                                <PowerOff size={14} />
+                                <span>{deactivatingId === p.id ? 'Deactivating...' : 'Deactivate'}</span>
+                              </button>
+                            </>
                           )}
                           <button
                             onClick={() => openMovementsHistory(p)}
@@ -512,8 +550,10 @@ export const ProductsPage: React.FC = () => {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-            <button type="button" onClick={() => setIsAddModalOpen(false)} className="btn btn-secondary">Cancel</button>
-            <button type="submit" className="btn btn-primary">Save Product</button>
+            <button type="button" onClick={() => setIsAddModalOpen(false)} disabled={submittingProduct} className="btn btn-secondary">Cancel</button>
+            <button type="submit" disabled={submittingProduct || uploadingImage} className="btn btn-primary">
+              {submittingProduct ? 'Saving Product...' : 'Save Product'}
+            </button>
           </div>
         </form>
       </Modal>

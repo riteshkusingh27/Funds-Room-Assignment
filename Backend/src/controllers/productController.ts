@@ -14,6 +14,7 @@ import {
 import {
   createProductService,
   createStockMovementService,
+  deleteProductService,
   getProductService,
   listProductMovementsService,
   listProductService,
@@ -153,5 +154,15 @@ export async function proxyProductImage(req: Request, res: Response): Promise<vo
   res.setHeader("Content-Type", contentType);
   res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
   res.send(buffer);
+}
+
+export async function deleteProduct(req: Request, res: Response): Promise<void> {
+  const productId = parseProductId(req.params);
+  await deleteProductService(productId);
+
+  res.status(200).json({
+    success: true,
+    message: "Product deactivated/deleted successfully"
+  });
 }
 

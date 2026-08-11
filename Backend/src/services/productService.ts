@@ -6,6 +6,7 @@ import type { ProductCreateInput, ProductListQuery, ProductUpdateInput } from ".
 import type { StockMovementCreateInput, StockMovementListQuery } from "../validators/stockMovementValidators";
 import {
   createProduct as createProductRecord,
+  deleteProduct as deleteProductRecord,
   getProductById,
   getProductByIdWithClient,
   listProducts,
@@ -76,4 +77,11 @@ export async function listProductMovementsService(
   }
 
   return listMovementsByProduct(productId, query.page, query.limit);
+}
+
+export async function deleteProductService(id: number): Promise<void> {
+  const deleted = await deleteProductRecord(id);
+  if (!deleted) {
+    throw new ApiError(404, "Product not found");
+  }
 }

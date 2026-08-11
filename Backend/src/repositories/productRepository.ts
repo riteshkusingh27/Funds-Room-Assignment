@@ -208,3 +208,8 @@ export async function adjustStock(
     [quantityDelta, productId]
   );
 }
+
+export async function deleteProduct(id: number): Promise<boolean> {
+  const result = await pool.query(`DELETE FROM products WHERE id = $1`, [id]);
+  return (result.rowCount ?? 0) > 0;
+}
