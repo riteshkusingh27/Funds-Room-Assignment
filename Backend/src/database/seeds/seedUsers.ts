@@ -12,28 +12,59 @@ function getSeedUsers(): SeedUser[] {
   const defaultPassword = process.env.SEED_DEFAULT_PASSWORD ?? "password123";
 
   return [
+    // ADMIN Profiles (2)
     {
-      name: process.env.SEED_ADMIN_NAME ?? "Admin User",
+      name: process.env.SEED_ADMIN_NAME ?? "Admin Principal",
       email: process.env.SEED_ADMIN_EMAIL ?? "admin@example.com",
       password: process.env.SEED_ADMIN_PASSWORD ?? defaultPassword,
       role: "ADMIN"
     },
     {
-      name: process.env.SEED_SALES_NAME ?? "Sales User",
+      name: "Admin Associate",
+      email: "admin2@example.com",
+      password: defaultPassword,
+      role: "ADMIN"
+    },
+
+    // SALES Profiles (2)
+    {
+      name: process.env.SEED_SALES_NAME ?? "Sales Executive 1",
       email: process.env.SEED_SALES_EMAIL ?? "sales@example.com",
       password: process.env.SEED_SALES_PASSWORD ?? defaultPassword,
       role: "SALES"
     },
     {
-      name: process.env.SEED_WAREHOUSE_NAME ?? "Warehouse User",
+      name: "Sales Executive 2",
+      email: "sales2@example.com",
+      password: defaultPassword,
+      role: "SALES"
+    },
+
+    // WAREHOUSE Profiles (2)
+    {
+      name: process.env.SEED_WAREHOUSE_NAME ?? "Warehouse Manager 1",
       email: process.env.SEED_WAREHOUSE_EMAIL ?? "warehouse@example.com",
       password: process.env.SEED_WAREHOUSE_PASSWORD ?? defaultPassword,
       role: "WAREHOUSE"
     },
     {
-      name: process.env.SEED_ACCOUNTS_NAME ?? "Accounts User",
+      name: "Warehouse Manager 2",
+      email: "warehouse2@example.com",
+      password: defaultPassword,
+      role: "WAREHOUSE"
+    },
+
+    // ACCOUNTS Profiles (2)
+    {
+      name: process.env.SEED_ACCOUNTS_NAME ?? "Accounts Manager 1",
       email: process.env.SEED_ACCOUNTS_EMAIL ?? "accounts@example.com",
       password: process.env.SEED_ACCOUNTS_PASSWORD ?? defaultPassword,
+      role: "ACCOUNTS"
+    },
+    {
+      name: "Accounts Manager 2",
+      email: "accounts2@example.com",
+      password: defaultPassword,
       role: "ACCOUNTS"
     }
   ];
@@ -62,7 +93,7 @@ async function run(): Promise<void> {
     }
   });
 
-  console.log("Seeded users for all roles");
+  console.log("Seeded 2 profiles for each role (ADMIN, SALES, WAREHOUSE, ACCOUNTS)");
 }
 
 run()

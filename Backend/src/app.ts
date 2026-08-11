@@ -6,9 +6,23 @@ import apiRouter from "./routes";
 
 const app = express();
 
+const allowedOrigins = [
+  env.frontendUrl,
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:5174",
+  "http://localhost:4173"
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: env.frontendUrl,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin) || origin.startsWith("http://localhost:") || origin.startsWith("http://127.0.0.1:")) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
     credentials: true
   })
 );
