@@ -12,7 +12,6 @@ import {
   TrendingUp,
   PlusCircle,
   PackageCheck,
-  Building2,
 } from 'lucide-react';
 
 type DashboardData = {
@@ -105,8 +104,12 @@ export const DashboardPage: React.FC = () => {
 
           {/* Operational Workflow Shortcuts */}
           <div className="card" style={{ marginBottom: '28px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-              <Building2 size={18} color="var(--primary)" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+              <img
+                src="https://res.cloudinary.com/dtigmagdl/image/upload/v1786448704/ddf06e94-85f0-426a-8aa1-b9dfe8e34c83_kzejjt.png"
+                alt="FundsRoom Logo"
+                style={{ width: '24px', height: '24px', objectFit: 'contain' }}
+              />
               <h2 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)' }}>Enterprise Operations Overview</h2>
             </div>
 

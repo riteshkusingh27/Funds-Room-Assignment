@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import type { UserRole } from '../context/AuthContext';
 import { api, ApiError } from '../api/client';
 import { Toast } from '../components/Common';
-import { Building2, Lock, Mail, ArrowRight } from 'lucide-react';
+import { Lock, Mail, ArrowRight } from 'lucide-react';
 
 type LoginResponse = {
   token: string;
@@ -76,21 +76,17 @@ export const LoginPage: React.FC = () => {
       >
         {/* Logo Header */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div
+          <img
+            src="https://res.cloudinary.com/dtigmagdl/image/upload/v1786448704/ddf06e94-85f0-426a-8aa1-b9dfe8e34c83_kzejjt.png"
+            alt="FundsRoom Logo"
             style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '10px',
-              background: '#4f46e5',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '14px',
-              color: '#ffffff',
+              width: '56px',
+              height: '56px',
+              objectFit: 'contain',
+              marginBottom: '12px',
+              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))',
             }}
-          >
-            <Building2 size={26} />
-          </div>
+          />
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
             FundsRoom ERP
           </h1>

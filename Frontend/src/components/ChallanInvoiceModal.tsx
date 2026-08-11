@@ -3,7 +3,7 @@ import { api } from '../api/client';
 import { numberToWords } from '../utils/numberToWords';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { Download, Printer, X, Building2 } from 'lucide-react';
+import { Download, Printer, X } from 'lucide-react';
 
 type ChallanItem = {
   id: number;
@@ -143,7 +143,11 @@ export const ChallanInvoiceModal: React.FC<Props> = ({ challanId, onClose }) => 
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Building2 size={22} color="var(--primary)" />
+            <img
+              src="https://res.cloudinary.com/dtigmagdl/image/upload/v1786448704/ddf06e94-85f0-426a-8aa1-b9dfe8e34c83_kzejjt.png"
+              alt="FundsRoom Logo"
+              style={{ width: '28px', height: '28px', objectFit: 'contain' }}
+            />
             <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--text-main)' }}>
               Official Delivery Challan & Invoice
             </h3>
@@ -164,10 +168,10 @@ export const ChallanInvoiceModal: React.FC<Props> = ({ challanId, onClose }) => 
               onClick={handlePrint}
               disabled={loading}
               className="btn btn-secondary btn-sm"
-              style={{ padding: '8px 14px' }}
+              style={{ padding: '8px 16px', fontWeight: 600 }}
             >
               <Printer size={16} />
-              <span>Print</span>
+              <span>Print Invoice</span>
             </button>
 
             <button onClick={onClose} className="btn btn-secondary btn-sm" style={{ padding: '8px' }}>
@@ -176,21 +180,21 @@ export const ChallanInvoiceModal: React.FC<Props> = ({ challanId, onClose }) => 
           </div>
         </div>
 
-        {/* Invoice Preview Container */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '24px', backgroundColor: '#f1f5f9' }}>
+        {/* Invoice Printable View */}
+        <div style={{ padding: '24px', flex: 1, overflowY: 'auto', backgroundColor: '#f1f5f9' }}>
           {loading ? (
             <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>
               Loading challan details...
             </div>
           ) : !challan ? (
             <div style={{ textAlign: 'center', padding: '60px', color: '#f87171' }}>
-              Failed to load challan document.
+              Challan details not found.
             </div>
           ) : (
             /* Print Printable Invoice Template - Clean White Paper styling */
             <div
               ref={invoiceRef}
-              id="printable-challan-invoice"
+              id="invoice-document"
               style={{
                 width: '100%',
                 maxWidth: '800px',
@@ -217,23 +221,12 @@ export const ChallanInvoiceModal: React.FC<Props> = ({ challanId, onClose }) => 
                 }}
               >
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                    <div
-                      style={{
-                        width: '28px',
-                        height: '28px',
-                        borderRadius: '6px',
-                        background: '#6366f1',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: '#fff',
-                        fontWeight: 900,
-                        fontSize: '14px',
-                      }}
-                    >
-                      F
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+                    <img
+                      src="https://res.cloudinary.com/dtigmagdl/image/upload/v1786448704/ddf06e94-85f0-426a-8aa1-b9dfe8e34c83_kzejjt.png"
+                      alt="FundsRoom Logo"
+                      style={{ width: '32px', height: '32px', objectFit: 'contain' }}
+                    />
                     <span style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
                       FUNDSROOM ERP & LOGISTICS
                     </span>

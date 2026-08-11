@@ -9,7 +9,6 @@ import {
   FileText,
   LogOut,
   Shield,
-  Building2,
 } from 'lucide-react';
 
 type NavItem = {
@@ -76,20 +75,15 @@ export const Sidebar: React.FC = () => {
       <div>
         {/* Brand Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '4px 6px 20px', borderBottom: '1px solid #e2e8f0' }}>
-          <div
+          <img
+            src="https://res.cloudinary.com/dtigmagdl/image/upload/v1786448704/ddf06e94-85f0-426a-8aa1-b9dfe8e34c83_kzejjt.png"
+            alt="FundsRoom Logo"
             style={{
               width: '36px',
               height: '36px',
-              borderRadius: '8px',
-              background: '#4f46e5',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#ffffff',
+              objectFit: 'contain',
             }}
-          >
-            <Building2 size={20} />
-          </div>
+          />
           <div>
             <h1 style={{ fontSize: '1.0625rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em', lineHeight: 1.2 }}>
               FundsRoom ERP
