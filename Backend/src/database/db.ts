@@ -3,9 +3,7 @@ import { env } from "../config/env";
 
 export const pool = new Pool({
   connectionString: env.databaseUrl,
-  ssl: env.databaseUrl.includes("sslmode=require")
-    ? { rejectUnauthorized: false }
-    : undefined
+  ssl: env.databaseUrl ? { rejectUnauthorized: false } : undefined
 });
 
 export async function withTransaction<T>(work: (client: import("pg").PoolClient) => Promise<T>): Promise<T> {
