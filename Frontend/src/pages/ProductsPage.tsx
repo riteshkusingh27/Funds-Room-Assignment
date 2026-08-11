@@ -38,6 +38,20 @@ type StockMovement = {
   createdAt: string;
 };
 
+const formatImageUrl = (url?: string | null) => {
+  if (!url) return '';
+  if (url.startsWith('data:') || url.startsWith('blob:')) return url;
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    if (url.includes('r2.cloudflarestorage.com')) {
+      const match = url.match(/product-images\/(.+)$/);
+      const key = match ? match[1] : url;
+      return `/api/products/image-proxy?key=${encodeURIComponent(key)}`;
+    }
+    return url;
+  }
+  return url;
+};
+
 export const ProductsPage: React.FC = () => {
   const { hasRole } = useAuth();
   const canModify = hasRole(['ADMIN', 'WAREHOUSE']);
@@ -67,6 +81,7 @@ export const ProductsPage: React.FC = () => {
   const [minimumStock, setMinimumStock] = useState('');
   const [warehouseLocation, setWarehouseLocation] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [imagePreviewUrl, setImagePreviewUrl] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
 
   // Form State - Adjust Stock
@@ -103,7 +118,10 @@ export const ProductsPage: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const localPreview = URL.createObjectURL(file);
+    setImagePreviewUrl(localPreview);
     setUploadingImage(true);
+
     const reader = new FileReader();
     reader.onload = async () => {
       try {
@@ -161,6 +179,7 @@ export const ProductsPage: React.FC = () => {
     setMinimumStock('');
     setWarehouseLocation('');
     setImageUrl('');
+    setImagePreviewUrl('');
   };
 
   const handleAdjustStock = async (e: React.FormEvent) => {
@@ -293,7 +312,7 @@ export const ProductsPage: React.FC = () => {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                           {p.imageUrl ? (
                             <img
-                              src={p.imageUrl}
+                              src={formatImageUrl(p.imageUrl)}
                               alt={p.name}
                               style={{
                                 width: '44px',
@@ -412,9 +431,9 @@ export const ProductsPage: React.FC = () => {
           <div className="input-group">
             <label className="input-label">Product Image (Cloudflare R2 Storage)</label>
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#f8fafc', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid #e2e8f0' }}>
-              {imageUrl ? (
+              {imagePreviewUrl || imageUrl ? (
                 <img
-                  src={imageUrl}
+                  src={imagePreviewUrl || formatImageUrl(imageUrl)}
                   alt="Preview"
                   style={{
                     width: '52px',

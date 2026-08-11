@@ -19,7 +19,7 @@ import {
   listProductService,
   updateProductService
 } from "../services/productService";
-import { uploadProductImageToR2 } from "../services/r2Service";
+import { getImageFromR2, uploadProductImageToR2 } from "../services/r2Service";
 
 function throwValidationError(message: string, errors: Record<string, string>): never {
   throw new ApiError(400, message, errors);
@@ -134,11 +134,24 @@ export async function uploadProductImage(req: Request, res: Response): Promise<v
   const base64Clean = base64Data.replace(/^data:image\/\w+;base64,/, "");
   const fileBuffer = Buffer.from(base64Clean, "base64");
 
-  const imageUrl = await uploadProductImageToR2(fileBuffer, fileName, fileType || "image/jpeg");
+  const { fullR2Url, proxyUrl } = await uploadProductImageToR2(fileBuffer, fileName, fileType || "image/jpeg");
 
   res.status(200).json({
     success: true,
-    data: { imageUrl }
+    data: { imageUrl: proxyUrl, fullR2Url }
   });
+}
+
+export async function proxyProductImage(req: Request, res: Response): Promise<void> {
+  const key = (req.query.key as string) || (req.params.key as string) || (req.params[0] as string);
+  if (!key) {
+    throw new ApiError(400, "Image key is required");
+  }
+
+  const { buffer, contentType } = await getImageFromR2(key);
+
+  res.setHeader("Content-Type", contentType);
+  res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+  res.send(buffer);
 }
 

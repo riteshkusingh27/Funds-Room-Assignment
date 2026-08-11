@@ -5,6 +5,7 @@ import {
   getProduct,
   listProductMovements,
   listProducts,
+  proxyProductImage,
   updateProduct,
   uploadProductImage
 } from "../controllers/productController";
@@ -13,6 +14,9 @@ import { authorize } from "../middleware/authorize";
 import { asyncHandler } from "../utils/asyncHandler";
 
 const productRouter = Router();
+
+// Public image proxy for <img> rendering
+productRouter.get("/image-proxy", asyncHandler(proxyProductImage));
 
 productRouter.use(authenticate);
 
