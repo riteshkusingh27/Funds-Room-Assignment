@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Layout } from '../components/Layout';
 import { Modal, Toast, LoadingSpinner, StatusBadge } from '../components/Common';
-import { api, ApiError } from '../api/client';
+import { api, ApiError, API_BASE_URL } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import {
   PackagePlus,
@@ -46,9 +46,16 @@ const formatImageUrl = (url?: string | null) => {
     if (url.includes('r2.cloudflarestorage.com')) {
       const match = url.match(/product-images\/(.+)$/);
       const key = match ? match[1] : url;
-      return `/api/products/image-proxy?key=${encodeURIComponent(key)}`;
+      return `${API_BASE_URL}/products/image-proxy?key=${encodeURIComponent(key)}`;
     }
     return url;
+  }
+  if (url.startsWith('/api/')) {
+    const relativePath = url.replace(/^\/api/, '');
+    return `${API_BASE_URL}${relativePath}`;
+  }
+  if (url.startsWith('/')) {
+    return `${API_BASE_URL}${url}`;
   }
   return url;
 };
